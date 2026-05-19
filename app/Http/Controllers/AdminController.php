@@ -41,6 +41,7 @@ class AdminController extends Controller
 
         AdminNotification::create([
             'user_id' => auth()->id(),
+            'category' => 'admin',
             'title' => $validated['title'],
             'message' => $validated['message'],
         ]);
@@ -56,13 +57,16 @@ class AdminController extends Controller
 
         $technicians = User::query()
             ->where('role', 'technician')
-            ->withCount([
-                'assignedFeedback as assigned_tasks_count' => function ($query) {
-                    $query->whereNotIn('repair_progress', ['completed']);
-                },
-            ])
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->map(function (User $technician): User {
+                $technician->assigned_tasks_count = Feedback::query()
+                    ->where('assigned_technician_id', $technician->id)
+                    ->whereNotIn('repair_progress', ['completed'])
+                    ->count();
+
+                return $technician;
+            });
 
         $complaints = Feedback::query()
             ->with('assignedTechnician')
@@ -86,7 +90,7 @@ class AdminController extends Controller
         $this->authorizeAdmin();
 
         $validated = $request->validate([
-            'assigned_technician_id' => ['nullable', 'exists:users,id'],
+            'assigned_technician_id' => ['nullable', 'string'],
             'repair_progress' => ['required', 'in:queued,assigned,in_progress,completed'],
         ]);
 

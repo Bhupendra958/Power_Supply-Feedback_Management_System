@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AdminNotification extends Model
 {
+    protected $connection = 'mongodb';
     protected $fillable = [
         'user_id',
         'recipient_user_id',

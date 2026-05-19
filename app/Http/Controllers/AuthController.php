@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
@@ -23,7 +24,29 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        try {
+            $attempt = Auth::attempt($credentials, $request->boolean('remember'));
+        } catch (\RuntimeException $e) {
+            // Handle legacy/plaintext passwords: if stored password equals provided one,
+            // re-hash it using the application's hasher and retry.
+            if (str_contains($e->getMessage(), 'Bcrypt')) {
+                $user = User::where('email', $credentials['email'])->first();
+                if ($user && isset($user->password) && $user->password === $credentials['password']) {
+                    $user->password = Hash::make($credentials['password']);
+                    $user->save();
+
+                    $attempt = Auth::attempt($credentials, $request->boolean('remember'));
+                } else {
+                    return back()
+                        ->withErrors(['email' => 'The provided credentials do not match our records.'])
+                        ->onlyInput('email');
+                }
+            } else {
+                throw $e;
+            }
+        }
+
+        if (! ($attempt ?? false)) {
             return back()
                 ->withErrors(['email' => 'The provided credentials do not match our records.'])
                 ->onlyInput('email');
@@ -48,6 +71,7 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
+        $validated['password'] = Hash::make($validated['password']);
         $user = User::create($validated);
 
         Auth::login($user);

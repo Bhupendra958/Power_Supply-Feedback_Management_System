@@ -3,44 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\Feedback;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use stdClass;
 
 class DashboardController extends Controller
 {
     public function index(): View
     {
-        $totalFeedback = Feedback::count();
-        $latestFeedback = Feedback::latest()->take(5)->get();
         $allFeedback = Feedback::latest()->get();
+        $totalFeedback = $allFeedback->count();
+        $latestFeedback = $allFeedback->take(5);
 
-        $averages = Feedback::query()
-            ->selectRaw('
-                AVG(safety_rating) as safety,
-                AVG(workstation_rating) as workstation,
-                AVG(equipment_rating) as equipment,
-                AVG(overall_satisfaction) as satisfaction
-            ')
-            ->first();
+        $averages = (object) [
+            'safety' => $this->averageRating($allFeedback, 'safety_rating'),
+            'workstation' => $this->averageRating($allFeedback, 'workstation_rating'),
+            'equipment' => $this->averageRating($allFeedback, 'equipment_rating'),
+            'satisfaction' => $this->averageRating($allFeedback, 'overall_satisfaction'),
+        ];
 
-        $recommendations = Feedback::query()
-            ->select('recommend_position', DB::raw('COUNT(*) as total'))
-            ->groupBy('recommend_position')
-            ->pluck('total', 'recommend_position');
+        $recommendations = $allFeedback->countBy('recommend_position');
 
-        $departmentLeaders = Feedback::query()
-            ->select('department', DB::raw('COUNT(*) as total'), DB::raw('AVG(overall_satisfaction) as average_rating'))
+        $departmentLeaders = $allFeedback
             ->groupBy('department')
-            ->orderByDesc('total')
+            ->map(function (Collection $items, string $department): stdClass {
+                return (object) [
+                    'department' => $department,
+                    'total' => $items->count(),
+                    'average_rating' => $this->averageRating($items, 'overall_satisfaction'),
+                ];
+            })
+            ->sortByDesc('total')
             ->take(4)
-            ->get();
+            ->values();
 
-        $needsAttention = Feedback::query()
-            ->where('overall_satisfaction', '<=', 2)
-            ->orWhere('safety_rating', '<=', 2)
-            ->latest()
+        $needsAttention = $allFeedback
+            ->filter(fn (Feedback $feedback): bool => (int) $feedback->overall_satisfaction <= 2 || (int) $feedback->safety_rating <= 2)
             ->take(4)
-            ->get();
+            ->values();
 
         return view('dashboard', [
             'totalFeedback' => $totalFeedback,
@@ -51,5 +51,18 @@ class DashboardController extends Controller
             'departmentLeaders' => $departmentLeaders,
             'needsAttention' => $needsAttention,
         ]);
+    }
+
+    private function averageRating(Collection $feedback, string $field): float
+    {
+        $ratings = $feedback
+            ->pluck($field)
+            ->filter(fn ($rating): bool => is_numeric($rating));
+
+        if ($ratings->isEmpty()) {
+            return 0.0;
+        }
+
+        return (float) $ratings->avg();
     }
 }

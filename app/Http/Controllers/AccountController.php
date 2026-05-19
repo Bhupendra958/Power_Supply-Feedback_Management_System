@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
@@ -20,20 +21,18 @@ class AccountController extends Controller
     {
         $user = auth()->user();
 
-        $feedbackStats = Feedback::query()
-            ->where('user_id', $user->id)
-            ->selectRaw('
-                COUNT(*) as total,
-                AVG(overall_satisfaction) as satisfaction,
-                AVG(safety_rating) as safety
-            ')
-            ->first();
-
-        $latestFeedback = Feedback::query()
+        $userFeedback = Feedback::query()
             ->where('user_id', $user->id)
             ->latest()
-            ->take(3)
             ->get();
+
+        $feedbackStats = (object) [
+            'total' => $userFeedback->count(),
+            'satisfaction' => $this->averageRating($userFeedback, 'overall_satisfaction'),
+            'safety' => $this->averageRating($userFeedback, 'safety_rating'),
+        ];
+
+        $latestFeedback = $userFeedback->take(3);
 
         return view('account.profile', compact('user', 'feedbackStats', 'latestFeedback'));
     }
@@ -340,5 +339,18 @@ class AccountController extends Controller
         }
 
         return 'I can help with power fluctuation, transformer failure reporting, outage notices, and electrical safety. Share the issue location, symptoms, and urgency so I can guide the next step.';
+    }
+
+    private function averageRating(Collection $feedback, string $field): float
+    {
+        $ratings = $feedback
+            ->pluck($field)
+            ->filter(fn ($rating): bool => is_numeric($rating));
+
+        if ($ratings->isEmpty()) {
+            return 0.0;
+        }
+
+        return (float) $ratings->avg();
     }
 }
