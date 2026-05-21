@@ -4,7 +4,10 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
+    curl \
     libzip-dev \
+    nodejs \
+    npm \
     && docker-php-ext-install zip
 
 RUN pecl install mongodb-1.21.0 \
@@ -17,6 +20,9 @@ WORKDIR /app
 COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
+
+RUN npm install
+RUN npm run build
 
 EXPOSE 10000
 
