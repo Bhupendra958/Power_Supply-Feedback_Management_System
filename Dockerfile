@@ -19,6 +19,12 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
+# Clear Laravel caches
+RUN php artisan config:clear
+RUN php artisan cache:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
+
 EXPOSE 10000
 
 CMD php artisan serve --host=0.0.0.0 --port=10000
