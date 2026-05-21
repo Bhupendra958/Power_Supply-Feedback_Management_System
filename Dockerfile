@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install zip
 
-# Install correct MongoDB version
 RUN pecl install mongodb-1.21.0 \
     && docker-php-ext-enable mongodb
 
@@ -18,12 +17,6 @@ WORKDIR /app
 COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
-
-# Clear Laravel caches
-RUN php artisan config:clear
-RUN php artisan cache:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
 
 EXPOSE 10000
 
