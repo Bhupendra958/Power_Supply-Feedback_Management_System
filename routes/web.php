@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// simple health check route (no DB access) to validate the app boots in production
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'app' => env('APP_NAME', 'feedback'),
+        'env' => env('APP_ENV', 'production'),
+    ], 200);
+});
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
