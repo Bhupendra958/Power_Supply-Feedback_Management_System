@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Str;
 
+$databaseConnection = env('DB_CONNECTION', 'mongodb');
+$cacheStore = env('CACHE_STORE', $databaseConnection === 'mongodb' ? 'file' : 'database');
+
+if ($databaseConnection === 'mongodb' && $cacheStore === 'database') {
+    $cacheStore = 'file';
+}
+
 return [
 
     /*
@@ -15,7 +22,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_STORE', 'database'),
+    'default' => $cacheStore,
 
     /*
     |--------------------------------------------------------------------------

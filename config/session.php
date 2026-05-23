@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Str;
 
+$databaseConnection = env('DB_CONNECTION', 'mongodb');
+$sessionDriver = env('SESSION_DRIVER', $databaseConnection === 'mongodb' ? 'file' : 'database');
+
+if ($databaseConnection === 'mongodb' && $sessionDriver === 'database') {
+    $sessionDriver = 'file';
+}
+
 return [
 
     /*
@@ -18,7 +25,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    'driver' => $sessionDriver,
 
     /*
     |--------------------------------------------------------------------------

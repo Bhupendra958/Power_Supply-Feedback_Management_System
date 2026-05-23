@@ -1,5 +1,17 @@
 <?php
 
+$databaseConnection = env('DB_CONNECTION', 'mongodb');
+$queueConnection = env('QUEUE_CONNECTION', $databaseConnection === 'mongodb' ? 'sync' : 'database');
+$failedQueueDriver = env('QUEUE_FAILED_DRIVER', $databaseConnection === 'mongodb' ? 'file' : 'database-uuids');
+
+if ($databaseConnection === 'mongodb' && $queueConnection === 'database') {
+    $queueConnection = 'sync';
+}
+
+if ($databaseConnection === 'mongodb' && $failedQueueDriver === 'database-uuids') {
+    $failedQueueDriver = 'file';
+}
+
 return [
 
     /*
@@ -13,7 +25,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => $queueConnection,
 
     /*
     |--------------------------------------------------------------------------
@@ -121,7 +133,7 @@ return [
     */
 
     'failed' => [
-        'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
+        'driver' => $failedQueueDriver,
         'database' => env('DB_CONNECTION', 'sqlite'),
         'table' => 'failed_jobs',
     ],

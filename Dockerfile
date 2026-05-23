@@ -11,6 +11,14 @@ RUN npm run build
 
 FROM php:8.2-cli
 
+ENV APP_ENV=production \
+    APP_DEBUG=false \
+    LOG_CHANNEL=stderr \
+    SESSION_DRIVER=file \
+    CACHE_STORE=file \
+    QUEUE_CONNECTION=sync \
+    QUEUE_FAILED_DRIVER=file
+
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
