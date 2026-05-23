@@ -4,7 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Feedback of Power Supply Position' }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @php
+        $manifestPath = public_path('build/manifest.json');
+        $manifest = file_exists($manifestPath)
+            ? json_decode(file_get_contents($manifestPath), true)
+            : [];
+
+        $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
+        $jsEntry = $manifest['resources/js/app.js'] ?? null;
+        $jsFile = $jsEntry['file'] ?? null;
+        $jsCssFiles = $jsEntry['css'] ?? [];
+    @endphp
+
+    @if ($cssFile || $jsFile)
+        @if ($cssFile)
+            <link rel="stylesheet" href="{{ asset('build/'.$cssFile) }}">
+        @endif
+
+        @foreach ($jsCssFiles as $jsCssFile)
+            @if ($jsCssFile !== $cssFile)
+                <link rel="stylesheet" href="{{ asset('build/'.$jsCssFile) }}">
+            @endif
+        @endforeach
+
+        @if ($jsFile)
+            <script type="module" src="{{ asset('build/'.$jsFile) }}"></script>
+        @endif
+    @else
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
 </head>
 
 <body class="min-h-screen">
