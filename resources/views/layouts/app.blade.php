@@ -4,13 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Feedback of Power Supply Position' }}</title>
-
-    @if(app()->environment('production'))
-        <link rel="stylesheet" href="{{ asset('build/assets/app-Ckw5llxp.css') }}">
-        <script type="module" src="{{ asset('build/assets/app-5BiNRsaf.js') }}"></script>
-    @else
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="min-h-screen">
