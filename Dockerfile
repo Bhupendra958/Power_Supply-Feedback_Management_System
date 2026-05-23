@@ -2,12 +2,15 @@ FROM node:22-bookworm-slim AS frontend
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+# install frontend deps and build from the `frontend/` folder (React + Vite)
+COPY frontend/package.json ./
+RUN npm install --silent
 
-COPY resources ./resources
-COPY tailwind.config.js postcss.config.js vite.config.js ./
+COPY frontend/ ./
 RUN npm run build
+
+# move Vite `dist` to a `public/build` folder so Laravel can read manifest.json
+RUN mkdir -p /app/public && mv /app/dist /app/public/build
 
 FROM php:8.2-cli
 
@@ -40,6 +43,11 @@ RUN composer install --no-dev --no-scripts --optimize-autoloader
 
 COPY . .
 COPY --from=frontend /app/public/build ./public/build
+
+# ensure Laravel can write to storage and bootstrap/cache
+RUN mkdir -p storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache || true \
+    && chmod -R 775 storage bootstrap/cache || true
 
 RUN composer dump-autoload --optimize \
     && php artisan package:discover --ansi
