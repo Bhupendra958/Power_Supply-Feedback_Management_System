@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Feedback of Power Supply Position' }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @php
         $manifestPath = public_path('build/manifest.json');
