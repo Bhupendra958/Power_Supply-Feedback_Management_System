@@ -37,11 +37,15 @@ RUN npm install
 # Build frontend assets
 RUN npm run build
 
-# Laravel cache
-RUN php artisan config:cache
+# Add entrypoint script and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# remove build-time config caching so runtime env vars are respected
 
 # Expose Render port
 EXPOSE 10000
 
-# Start Laravel
-CMD php artisan serve --host=0.0.0.0 --port=10000
+# Use entrypoint so we can cache config using runtime env vars
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
