@@ -1,57 +1,41 @@
-FROM node:22-bookworm-slim AS frontend
-
-WORKDIR /app
-
-# install frontend deps and build from the `frontend/` folder (React + Vite)
-COPY frontend/package.json ./
-RUN npm install --silent
-
-COPY frontend/ ./
-RUN npm run build
-
-# move Vite `dist` to a `public/build` folder so Laravel can read manifest.json
-RUN mkdir -p /app/public && mv /app/dist /app/public/build
-
 FROM php:8.2-cli
 
-ENV APP_ENV=production \
-    APP_DEBUG=false \
-    LOG_CHANNEL=stderr \
-    SESSION_DRIVER=file \
-    CACHE_STORE=file \
-    QUEUE_CONNECTION=sync \
-    QUEUE_FAILED_DRIVER=file
-
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    zip \
     curl \
     libzip-dev \
-    && docker-php-ext-install zip \
-    && rm -rf /var/lib/apt/lists/*
+    zip \
+    nodejs \
+    npm
 
-RUN pecl install mongodb-1.21.0 \
-    && docker-php-ext-enable mongodb
+# Install PHP extensions
+RUN docker-php-ext-install zip
 
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /app
 
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --optimize-autoloader
-
+# Copy project files
 COPY . .
-COPY --from=frontend /app/public/build ./public/build
 
-# ensure Laravel can write to storage and bootstrap/cache
-RUN mkdir -p storage bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache || true \
-    && chmod -R 775 storage bootstrap/cache || true
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-RUN composer dump-autoload --optimize \
-    && php artisan package:discover --ansi
+# Install Node dependencies
+RUN npm install
 
+# Build Vite assets
+RUN npm run build
+
+# Cache Laravel config
+RUN php artisan config:cache
+
+# Expose port
 EXPOSE 10000
 
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+# Start Laravel server
+CMD php artisan serve --host=0.0.0.0 --port=10000
