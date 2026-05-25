@@ -21,6 +21,11 @@ class DemoFeedbackResponseNotificationSeeder extends Seeder
             ['DEMO-008', 'Nitin Kumar', 'complaint', 'train_station', 'Electrical Maintenance', 'Evening', 3, 4, 3, 3, 'maybe', 'Power returned before peak passenger movement.', 'Improve panel labeling for quicker fault tracing.', 'assigned'],
             ['DEMO-009', 'Isha Patel', 'suggestion', 'bus', 'Operations', 'Morning', 4, 4, 5, 4, 'yes', 'Equipment condition was better after recent servicing.', 'Schedule inspections before heavy travel hours.', 'completed'],
             ['DEMO-010', 'Rohan Verma', 'complaint', 'other', 'Customer Support', 'Night', 1, 2, 2, 1, 'no', 'Complaint form was easy to submit.', 'Urgent outage complaints need priority call-back.', 'queued'],
+            ['DEMO-011', 'Tanya Bansal', 'suggestion', 'office', 'Energy Audit', 'Morning', 5, 4, 5, 5, 'yes', 'Daily meter readings are reviewed carefully before load changes.', 'Add a shared report board for weekly saving suggestions.', 'completed'],
+            ['DEMO-012', 'Mohit Yadav', 'complaint', 'hospital', 'Emergency Backup', 'Night', 2, 3, 2, 2, 'no', 'Backup operator arrived quickly after the alert.', 'Generator battery checks should be logged before every night shift.', 'in_progress'],
+            ['DEMO-013', 'Pooja Saini', 'suggestion', 'school', 'Safety', 'Evening', 4, 5, 4, 4, 'yes', 'Switch boards were labeled clearly after maintenance.', 'Keep a visible emergency contact chart near the main panel.', 'completed'],
+            ['DEMO-014', 'Dev Malhotra', 'complaint', 'market', 'Field Service', 'Morning', 3, 2, 3, 3, 'maybe', 'Complaint registration was simple and fast.', 'Repair queue updates should be shared with shop owners earlier.', 'assigned'],
+            ['DEMO-015', 'Simran Kaur', 'suggestion', 'public_place', 'Maintenance', 'Evening', 4, 4, 4, 4, 'yes', 'Recent lighting repair improved visibility in the area.', 'Schedule inspection after rain to prevent repeated supply faults.', 'completed'],
         ];
 
         foreach ($feedbackRows as $index => $row) {
@@ -77,6 +82,11 @@ class DemoFeedbackResponseNotificationSeeder extends Seeder
             ['Urgent complaint logged', 'DEMO-010 has very low satisfaction and needs priority attention.'],
             ['Dashboard data updated', 'Ten demo feedback responses are available for reports.'],
             ['Notification test complete', 'Sample notification records are ready for the notifications page.'],
+            ['Static feedback added', 'Additional demo feedback rows have been added for dashboard, response, and tracking pages.'],
+            ['Backup review required', 'DEMO-012 reports weak backup equipment performance during night shift.'],
+            ['Safety contact reminder', 'DEMO-013 suggests keeping emergency contact details near school panels.'],
+            ['Market repair update', 'DEMO-014 is waiting for assignment progress review.'],
+            ['Public place inspection', 'DEMO-015 recommends post-rain inspection for outdoor supply points.'],
         ];
 
         foreach ($notifications as $index => [$title, $message]) {

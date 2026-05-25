@@ -95,7 +95,12 @@ class FeedbackStaticSeeder extends Seeder
         foreach ($feedback as $item) {
             Feedback::updateOrCreate(
                 ['employee_id' => $item['employee_id']],
-                $item
+                array_merge([
+                    'user_id' => null,
+                    'feedback_type' => 'suggestion',
+                    'assigned_technician_id' => null,
+                    'repair_progress' => 'completed',
+                ], $item)
             );
         }
     }

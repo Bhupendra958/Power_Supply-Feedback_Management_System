@@ -12,6 +12,8 @@ fi
 # Cache config at container start so it picks up runtime environment variables
 php artisan config:clear || true
 php artisan config:cache || true
+php artisan db:seed --class=FeedbackStaticSeeder --force || true
+php artisan db:seed --class=DemoFeedbackResponseNotificationSeeder --force || true
 
 # Continue with the main container command
 exec "$@"
