@@ -1,3 +1,15 @@
+FROM node:22-bookworm-slim AS assets
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY vite.config.js postcss.config.js tailwind.config.js ./
+COPY resources ./resources
+
+RUN npm run build
+
 FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
@@ -6,10 +18,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     libzip-dev \
     zip \
-    nodejs \
-    npm \
     libssl-dev \
-    pkg-config
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install zip
 
@@ -20,13 +31,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+COPY --from=assets /app/public/build ./public/build
 
-RUN npm install
-
-RUN npm run build
+RUN composer dump-autoload --optimize \
+    && php artisan package:discover --ansi \
+    && chmod +x docker-entrypoint.sh \
+    && chmod -R 775 storage bootstrap/cache
 
 RUN php artisan config:clear
 RUN php artisan cache:clear
@@ -35,4 +51,6 @@ RUN php artisan route:clear
 
 EXPOSE 10000
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]

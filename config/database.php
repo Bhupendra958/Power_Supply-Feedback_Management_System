@@ -58,7 +58,7 @@ return [
         'mongodb' => [
             'driver' => 'mongodb',
             'dsn' => env('DB_URI'),
-            'database' => env('DB_DATABASE'),
+            'database' => env('DB_DATABASE', 'power_supply_feedback'),
         ],
 
     ],

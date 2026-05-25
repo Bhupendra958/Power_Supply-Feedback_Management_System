@@ -20,7 +20,7 @@ services:
       - key: DB_URI
         sync: false
       - key: DB_DATABASE
-        sync: false
+        value: power_supply_feedback
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_STORE
