@@ -1,59 +1,188 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ⚡ Power Supply Feedback Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A full-stack web application developed to collect, manage, and analyze customer feedback related to electricity and power supply services. The system helps users submit complaints and feedback efficiently while enabling administrators to monitor responses and improve service quality through a centralized dashboard.
 
-## About Laravel
+🌐 **Live Demo:** https://power-supply-feedback-management-system.onrender.com
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# 🚀 Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- ✅ User Authentication & Secure Login
+- ✅ Feedback & Complaint Submission System
+- ✅ Admin Dashboard for Feedback Monitoring
+- ✅ Responsive User Interface
+- ✅ Real-Time Data Handling
+- ✅ Database Integration
+- ✅ Role-Based Access Control
+- ✅ Modern UI using Tailwind CSS & Blade
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# 🛠️ Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Frontend
+- HTML5
+- CSS3
+- Tailwind CSS
+- Blade Template Engine
 
-## Laravel Sponsors
+### Backend
+- PHP
+- Laravel Framework
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Database
+- MongoDB
+- SQL
 
-### Premium Partners
+### Deployment & Tools
+- Docker
+- Render
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+# 📂 Project Structure
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+Power_Supply_Feedback_Management_System/
+│
+├── app/                # Application Logic
+├── bootstrap/          # Framework Bootstrap Files
+├── config/             # Configuration Files
+├── database/           # Database Migrations & Seeders
+├── public/             # Public Assets
+├── resources/          # Blade Views & Frontend Resources
+├── routes/             # Web Routes
+├── storage/            # Application Storage
+├── tests/              # Testing Files
+└── .dockerignore
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# ⚙️ Installation & Setup
 
-## Security Vulnerabilities
+## 1️⃣ Clone the Repository
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+git clone https://github.com/Bhupendra958/Power_Supply_Feedback_Management_System.git
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 2️⃣ Navigate to Project Folder
+
+```bash
+cd Power_Supply_Feedback_Management_System
+```
+
+---
+
+## 3️⃣ Install Dependencies
+
+```bash
+composer install
+npm install
+```
+
+---
+
+## 4️⃣ Configure Environment
+
+Create a `.env` file and update database credentials:
+
+```env
+APP_NAME=PowerSupplyFeedbackSystem
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=power_supply_feedback
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+## 5️⃣ Generate Application Key
+
+```bash
+php artisan key:generate
+```
+
+---
+
+## 6️⃣ Run Database Migration
+
+```bash
+php artisan migrate
+```
+
+---
+
+## 7️⃣ Start Development Server
+
+```bash
+php artisan serve
+```
+
+---
+
+# 🌐 Access Application
+
+```bash
+http://127.0.0.1:8000
+```
+
+---
+
+# 🎯 Project Objective
+
+The objective of this project is to digitize and simplify the process of collecting power supply feedback and complaints while providing administrators with tools to analyze and manage customer responses efficiently.
+
+---
+
+# 🔒 Security Features
+
+- JWT/Session Authentication
+- Protected Routes
+- Secure Form Validation
+- CSRF Protection
+- Role-Based Authorization
+
+---
+
+# 📈 Future Enhancements
+
+- 📊 Analytics Dashboard
+- 📩 Email & SMS Notifications
+- 📱 Mobile Responsive Enhancements
+- 🧠 AI-Based Complaint Analysis
+- 📍 Complaint Tracking System
+
+---
+
+# 👨‍💻 Author
+
+## Bhupendra
+
+Full-Stack Developer | B.Tech (Computer Science & Engineering) Student at LPU
+
+Passionate about building scalable web applications and real-world software solutions.
+
+---
+
+# 📬 Feedback
+
+Suggestions and contributions are welcome.  
+Feel free to fork the repository or open an issue.
+
+---
+
+# ⭐ Support
+
+If you like this project, consider giving it a star on GitHub!
