@@ -23,6 +23,10 @@ services:
         value: power_supply_feedback
       - key: SESSION_DRIVER
         value: file
+      - key: SESSION_SECURE_COOKIE
+        value: true
+      - key: SESSION_SAME_SITE
+        value: lax
       - key: CACHE_STORE
         value: file
       - key: QUEUE_CONNECTION
